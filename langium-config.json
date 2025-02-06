@@ -1,0 +1,15 @@
+{
+    "projectName": "LaDsl",
+    "languages": [{
+        "id": "la-dsl",
+        "grammar": "src/language/la-dsl.langium",
+        "fileExtensions": [".ldsl"],
+        "textMate": {
+            "out": "syntaxes/la-dsl.tmLanguage.json"
+        },
+        "monarch": {
+            "out": "src/syntaxes/la-dsl.monarch.ts"
+        }
+    }],
+    "out": "src/language/generated"
+}

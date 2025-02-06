@@ -1,0 +1,91 @@
+/**
+ * A simple blog
+ */
+/**
+ * Entities: Units that are translatable into DB Schema
+ */
+
+stack = ["react", "typescript", "tailwindcss", "create-react-app"]
+
+entity User {
+    id: number
+    name: String
+    private password: String
+    email: String
+}
+
+entity Post {
+    id: number
+    title: String
+    content: String
+    createdAt: datetime
+    author: User
+}
+
+entity Comment {
+    id: number
+    post: Post
+    content: String
+}
+
+/**
+ * Components: Reusable UI elements
+ */
+component NavItem {
+    title: String
+    href: String
+}
+
+component Menu {
+    navItems: String[]
+    //searchInput: HTML::Input
+}
+
+component Footer {
+    copyrightContent: String
+}
+
+page Home {
+    menu: component::Menu
+    recentPosts: entity::Post[]
+    footer: component::Footer
+}
+
+component PostList {
+    posts: entity::Post[]
+}
+
+page PostList {
+    menu: component::Menu
+    searchBar: ui::input
+    posts: entity::Post[]
+    footer: component::Footer
+}
+
+page About {
+    menu: component::Menu
+    aboutMe: String
+    footer: component::Footer
+}
+
+/**
+ * Actions: Units that are translatable into REST API,
+ * They can include abstract queries
+ */
+action loadRecentPosts {
+    route: "/recent-posts"
+    method: "GET"
+    returns: "Recent 10 posts"
+    /* 
+    returns: from Post | sortBy(p => p.createdAt, "DESC") | limit(10)
+             * from Post as post, * from Author as author WHERE post.author = author |
+                filter(() => author.banned)
+    */
+}
+
+action searchPosts {
+    route: "/search-posts"
+    method: "GET"
+    params: "query"
+    returns: "select * from Post where title like '%query%'"
+}
