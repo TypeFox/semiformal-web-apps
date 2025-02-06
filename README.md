@@ -3,6 +3,12 @@ semiform
 
 A semi-formal DSL for prompting LLMs.
 
+### How does this work?
+Current, the AST is serialized as JSON and sent to the assistant.
+The system prompts explains the model's structure and semantics.
+
+In general (and depending on the LLM's mood), it should generate two folders, `frontend` and `backend` (for the given `samples/blog-demo.ldsl`).
+
 ### Usage:
 
 #### CLI:
@@ -18,7 +24,7 @@ Arguments:
 2. Decided if you want to reuse existing assistant:
     1. No: Then you do not need anything, but you will create a new assistant if you run with `-m functions`.
     2. Yes: Then you will need to get the assistant ID from [https://platform.openai.com/assistants/](https://platform.openai.com/assistants/) and export it into your env as `SEMIFORM_ASSISTANT_ID`.
-    3. `Should I?` It is a good idea if you want to try custom prompts.
+    3. `Should I?` It is a good idea to create a new assistant if you want to try custom system prompts.
 
 #### Example:
 We will use the test case `samples/test1.ldsdl`, so all you need is
