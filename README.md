@@ -20,8 +20,9 @@ Arguments:
 
 
 #### Requirements:
-1. Have `OPENAI_API_KEY` exported or saved in `.env`.
-2. Decided if you want to reuse existing assistant:
+1. Build the project: `npm run langium:generate && npm run build`
+2. Have `OPENAI_API_KEY` exported or saved in `.env`.
+3. Decided if you want to reuse existing assistant:
     1. No: Then you do not need anything, the API will probably create a new assistant if you run with `-m functions`.
     2. Yes: Then you will need to get the assistant ID from [https://platform.openai.com/assistants/](https://platform.openai.com/assistants/) and export it into your env as `SEMIFORM_ASSISTANT_ID`.
     3. `Should I?` It is a good idea to create a new assistant if you want to try custom system prompts.
