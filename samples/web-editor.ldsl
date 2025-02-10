@@ -1,0 +1,104 @@
+/**
+ * A simple blog
+ */
+/**
+ * Entities: Units that are translatable into DB Schema
+ */
+
+stack = ["react", "typescript", "tailwindcss", "create-react-app"]
+
+entity Project {
+    id: number
+    name: String
+    description: String
+    createdAt: datetime
+    updatedAt: datetime
+    files: File[]
+}
+
+entity File {
+    id: number
+    name: String
+    content: String
+    createdAt: datetime
+    updatedAt: datetime
+    project: Project
+}
+
+component Toolbar {
+    runButton: ui::button
+    saveButton: ui::button
+    undoButton: ui::button
+    redoButton: ui::button
+    createFileButton: ui::button
+}
+
+component Header {
+    projectName: String
+    toolbar: Toolbar
+}
+
+component LeftPanel {
+    fileTree: {
+        displayType: ui::button
+        file: File
+        description: "A button to switch to the file"
+    }[]
+}
+
+component EditPane {
+    editor: ui::textarea
+}
+
+component BottomPanel {
+    console: ui::textarea
+}
+
+component Editor {
+    header: Header
+    leftPanel: LeftPanel
+    editPane: EditPane
+    bottomPanel: BottomPanel
+}
+
+action loadProject {
+    route: "/load-project"
+    method: "GET"
+    params: "projectId"
+    returns: "select * from Project where id = projectId"
+}
+
+action loadProjectFiles {
+    route: "/load-project-files"
+    method: "GET"
+    params: "projectId"
+    returns: "select * from File where projectId = projectId"
+}
+
+action saveProject {
+    route: "/save-project"
+    method: "POST"
+    params: "projectId"
+    returns: "update Project set name = projectId where id = projectId"
+}
+
+action saveFile {
+    route: "/save-file"
+    method: "POST"
+    params: "fileId, content"
+    returns: "update File set content = content where id = fileId"
+}
+
+action createFile {
+    route: "/create-file"
+    method: "POST"
+    params: "projectId, name"
+    returns: "insert into File (name, content, projectId) values (name, '', projectId)"
+}
+
+action deleteFile {
+    route: "/delete-file"
+    method: "POST"
+    params: "fileId"
+    returns: "delete from File where id = fileId"
+}
