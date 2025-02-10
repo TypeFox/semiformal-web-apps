@@ -55,8 +55,16 @@ EntityAttribute:
  * or a built-in type such as ui::input.
  */
 ComponentAttribute:
-    name=ID ':' ("component" "::"componentType=[Component:ID] | "entity" "::" entityType=[Entity:ID] | builtinType=BuiltinEntityType | UIComponent) (isArray+='[]')*;
+    name=ID ':' (((
+        (type=[ComponentUsabeType:ID] | builtinType=BuiltinEntityType | UIComponent) |
+        ('{' attributes+=ComponentAttribute* '}')
+    ) (isArray+='[]')*) | STRING) ;
 
+/**
+ * A component attribute type could be an entity or a component
+ */
+ComponentUsabeType:
+    Component | Entity;
 
 /**
  * A page, is a Root Component, that is a page in the frontend
