@@ -5,7 +5,10 @@ import { createLaDslServices } from '../../language/la-dsl-module.js';
 import type { Model } from '../../language/generated/ast.js';
 import { createAssistantWithFunctionCall, getAssistantResponse } from "./assistant-utils.js";
 
-export async function functionBasedPrompt(client: OpenAI, generatedFilePath: string, destination: string, name: string, model: Model) {
+export async function openaiPrompt(generatedFilePath: string, destination: string, name: string, model: Model) {
+    const client = new OpenAI({
+        apiKey: process.env["OPENAI_API_KEY"]
+    })
 
     const services = createLaDslServices(NodeFileSystem).LaDsl;
     const json = services.serializer.JsonSerializer.serialize(model, {

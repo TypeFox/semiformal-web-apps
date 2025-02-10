@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import { createFile } from "./fs-utils.js";
+import { createFile } from "../prompt-utils/fs-utils.js";
 
 export async function createAssistantWithFunctionCall(client: OpenAI) {
     let assistantId: string | undefined = process.env["SEMIFORM_ASSISTANT_ID"];

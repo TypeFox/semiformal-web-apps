@@ -8,6 +8,10 @@ Since this project is in early development, a date-based versioning scheme is us
 Follows loosely ubuntu versioning scheme: `YY.MM.patch`.
 Patches are incremental Ids that resets every month.
 
+### 25.2.2:
+- Added support for anthropic
+- Removed single prompt mode and multi-prompt mode
+
 ### 25.2.1:
 Support for OpenAI API support
 Multiple modes:
