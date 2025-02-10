@@ -38,7 +38,7 @@ component NavItem {
 
 component Menu {
     navItems: String[]
-    //searchInput: HTML::Input
+    searchInput: ui::input
 }
 
 component Footer {
