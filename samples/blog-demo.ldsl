@@ -46,26 +46,26 @@ component Footer {
 }
 
 page Home {
-    menu: component::Menu
-    recentPosts: entity::Post[]
-    footer: component::Footer
+    menu: Menu
+    recentPosts: Post[]
+    footer: Footer
 }
 
 component PostList {
-    posts: entity::Post[]
+    posts: Post[]
 }
 
 page PostList {
-    menu: component::Menu
+    menu: Menu
     searchBar: ui::input
-    posts: entity::Post[]
-    footer: component::Footer
+    posts: Post[]
+    footer: Footer
 }
 
 page About {
-    menu: component::Menu
+    menu: Menu
     aboutMe: String
-    footer: component::Footer
+    footer: Footer
 }
 
 /**
