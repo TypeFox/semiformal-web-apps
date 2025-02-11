@@ -32,11 +32,12 @@ Let's compare the two LLM backends, for the same DSL file!
 
 We will use the test case `samples/blog-demo.ldsl` and assume you have **both** keys exported, so all you need is
 1. Make sure the folder `samples/outputs` exists
-2. Run `node --env-file=.env bin/cli.js prompt samples/blog-demo.ldsl -n blog-1 -l openai -d samples/outputs`
+2. Run `node --env-file=.env bin/cli.js prompt samples/blog-demo.ldsl -n blog-by-openai -l openai -d samples/outputs`
 4. Keep an eye on the console output
-5. Have a look into `samples/outputs/blog-1`
-6. Run `node --env-file=.env bin/cli.js prompt samples/blog-demo.ldsl -n blog-1 -l anthropic -d samples/outputs`
-
+5. Have a look into `samples/outputs/blog-by-openai`
+6. Run `node --env-file=.env bin/cli.js prompt samples/blog-demo.ldsl -n blog-by-anthropic -l anthropic -d samples/outputs`
+7. Have a look at both folders `samples/outputs/blog-by-openai` and `samples/outputs/blog-by-anthropic`.
+8. The backend should be runnable with `docker compose up` and the frontend with `npm i && npm run start`.
 
 #### Overriding the model:
 
