@@ -25,7 +25,7 @@ export const generateAction = async (fileName: string, opts: GenerateOptions): P
 export const generatePromptAction = async (fileName: string, opts: PromptOptions): Promise<void> => {
     const services = createLaDslServices(NodeFileSystem).LaDsl;
     const model = await extractAstNode<Model>(fileName, services);
-    const generatedFilePath = await generatePrompt(model, fileName, opts.llmModel, opts.name, opts.destination);
+    const generatedFilePath = await generatePrompt(model, fileName, opts.llmModel, opts.modelName, opts.name, opts.destination);
     console.log(chalk.green(`JSON code generated successfully: ${generatedFilePath}`));
 };
 
@@ -38,6 +38,7 @@ export type PromptOptions = {
     name: string;
     destination: string;
     llmModel: LLMBackend;
+    modelName?: string;
 }
 
 export type LLMBackend = "openai" | "anthropic";
@@ -61,6 +62,7 @@ export default function(): void {
         .requiredOption("-n, --name <name>", "name of the project")
         .requiredOption("-l, --llm-model <model>", "LLM model to use, currently supported: openai, anthropic")
         .requiredOption("-d, --destination <dir>", "root destination directory for generating")
+        .option("-m, --model-name <name>", "name of the model to use, optional (gpt-4o, claude-3-5-sonnet-20241022, etc.)")
         .description("generates LLM response given a DSL source file")
         .action(generatePromptAction);
 

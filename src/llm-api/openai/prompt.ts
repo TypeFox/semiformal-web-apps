@@ -4,11 +4,16 @@ import { NodeFileSystem } from 'langium/node';
 import { createLaDslServices } from '../../language/la-dsl-module.js';
 import type { Model } from '../../language/generated/ast.js';
 import { createAssistantWithFunctionCall, getAssistantResponse } from "./assistant-utils.js";
+import { spinner } from '../../utils/spinner.js';
+import { Logger } from '../../utils/logger.js';
+import { displayGeneratedFiles } from '../../utils/file-display.js';
 
-export async function openaiPrompt(generatedFilePath: string, destination: string, name: string, model: Model) {
+export async function openaiPrompt(generatedFilePath: string, destination: string, name: string, model: Model, aiModelName: string) {
+    const baseFolder = path.join(destination, name);
+
     const client = new OpenAI({
         apiKey: process.env["OPENAI_API_KEY"]
-    })
+    });
 
     const services = createLaDslServices(NodeFileSystem).LaDsl;
     const json = services.serializer.JsonSerializer.serialize(model, {
@@ -16,12 +21,14 @@ export async function openaiPrompt(generatedFilePath: string, destination: strin
         space: 4
     });
 
-    let assistant = await createAssistantWithFunctionCall(client);
+    spinner.start('Creating OpenAI assistant...');
+    let assistant = await createAssistantWithFunctionCall(client, aiModelName);
+    spinner.succeed('Assistant created successfully');
 
     const thread = await client.beta.threads.create();
-    console.log("OpenAI Thread ID:", thread.id);
+    Logger.info("Created OpenAI Thread", { threadId: thread.id });
 
-
+    spinner.start('Generating backend service...');
     await client.beta.threads.messages.create(thread.id, {
         "role": "user",
         "content": [
@@ -40,9 +47,16 @@ When the service starts, some random data must be generated to test the service,
         ]
     });
 
-    console.info("Prompted the assistant for the backend service");
-    await getAssistantResponse(client, thread.id, assistant.id, path.join(destination, name));
+    Logger.info("Prompted assistant for backend service");
+    const backendFiles = await getAssistantResponse(client, thread.id, assistant.id, baseFolder);
+    spinner.succeed('Backend service generated');
+    
+    if (backendFiles && backendFiles.length > 0) {
+        Logger.info('Generated backend files:', { files: backendFiles });
+        displayGeneratedFiles(backendFiles, destination, 'Backend');
+    }
 
+    spinner.start('Generating frontend service...');
     await client.beta.threads.messages.create(thread.id, {
         "role": "user",
         "content": [
@@ -63,9 +77,16 @@ The user expects a fully functional frontend application, with a complete UI.
         ]
     });
 
-    console.info("Prompted the assistant for the frontend service");
-    await getAssistantResponse(client, thread.id, assistant.id, path.join(destination, name));
+    Logger.info("Prompted assistant for frontend service");
+    const frontendFiles = await getAssistantResponse(client, thread.id, assistant.id, path.join(destination, name));
+    spinner.succeed('Frontend service generated');
 
-    console.info("Assistant finished");
+    if (frontendFiles && frontendFiles.length > 0) {
+        Logger.info('Generated frontend files:', { files: frontendFiles });
+        displayGeneratedFiles(frontendFiles, destination, 'Frontend');
+    }
+
+    Logger.info("Assistant finished successfully");
+    spinner.succeed('Generation completed successfully');
 }
 

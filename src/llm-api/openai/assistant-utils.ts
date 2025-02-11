@@ -1,7 +1,9 @@
 import { OpenAI } from "openai";
 import { createFile } from "../prompt-utils/fs-utils.js";
+import { Logger } from '../../utils/logger.js';
+import * as path from 'path';
 
-export async function createAssistantWithFunctionCall(client: OpenAI) {
+export async function createAssistantWithFunctionCall(client: OpenAI, aiModelName: string) {
     let assistantId: string | undefined = process.env["SEMIFORM_ASSISTANT_ID"];
     if ((assistantId !== undefined) && (assistantId !== "")) {
         let assistant = await client.beta.assistants.retrieve(assistantId)
@@ -26,7 +28,7 @@ export async function createAssistantWithFunctionCall(client: OpenAI) {
     const assistant = await client.beta.assistants.create({
         name: "Semiform Assistant",
         instructions: SYSTEM_PROMPT,
-        model: "gpt-4o",
+        model: aiModelName,
         tools: [{
             type: "function",
             function: createFileFunction
@@ -36,64 +38,74 @@ export async function createAssistantWithFunctionCall(client: OpenAI) {
     return assistant;
 }
 
-export async function getAssistantResponse(openai: OpenAI, threadId: string, assistantId: string, baseFolder: string) {
-    let run = await openai.beta.threads.runs.create(threadId, {
+export async function getAssistantResponse(
+    client: OpenAI,
+    threadId: string,
+    assistantId: string,
+    outputPath: string
+): Promise<string[]> {
+    let run = await client.beta.threads.runs.create(threadId, {
         assistant_id: assistantId
     });
 
-    console.log("Waiting for response...");
+    Logger.info("Waiting for response...");
 
+    const generatedFiles: string[] = [];
+    
     while (true) {
-        run = await openai.beta.threads.runs.retrieve(threadId, run.id);
-        console.log(`pinged run status: ${run.status}`);
+        run = await client.beta.threads.runs.retrieve(threadId, run.id);
+        Logger.debug(`Run status: ${run.status}`);
 
         if (run.status === "completed") {
-            console.log("Assistant finished.");
+            Logger.info("Assistant finished.");
             break;
         }
         if (run.status === "failed") {
-            console.error(`Assistant failed with message: ${run.last_error?.message}`);
+            Logger.error(`Assistant failed`, { error: run.last_error?.message });
             break;
         }
 
         if (run.status === "requires_action") {
-            console.log("Assistant requires action, performing action...");
+            Logger.info("Assistant requires action, performing action...");
             let toolCalls = run.required_action?.submit_tool_outputs.tool_calls;
             if (toolCalls) {
                 let toolResponses: {tool_call_id: string, output: string}[] = [];
+                let filesCreated: string[] = [];
                 for (const tool of toolCalls) {
                     const func = tool.function;
                     if(func.name === "createFile") {
                         const { folder, filename, content } = JSON.parse(func.arguments);
-                        await createFile(baseFolder, folder, filename, content);
+                        await createFile(outputPath, folder, filename, content);
                         toolResponses.push({ tool_call_id: tool.id, output: "File created" });
+                        filesCreated.push(path.join(outputPath, folder, filename));
+                        generatedFiles.push(path.join(folder, filename));
                     }
                 }
 
-                await openai.beta.threads.runs.submitToolOutputs(threadId, run.id, {
+                await client.beta.threads.runs.submitToolOutputs(threadId, run.id, {
                     tool_outputs: toolResponses
                 });
         
-                console.log("Tool execution results sent back to OpenAI.");
+                Logger.debug("Tool execution results sent back to OpenAI.");
             }
             else {
+                Logger.error(`Unknown ${run.required_action?.type} action required by assistant.`);
                 throw new Error(`Unknown ${run.required_action?.type} action required by assistant.`);
             }
         }
 
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait before polling again
+        await new Promise((resolve) => setTimeout(resolve, 1000));
     }
 
-    // Fetch the latest messages to get assistant response
-    const messages = await openai.beta.threads.messages.list(threadId);
+    const messages = await client.beta.threads.messages.list(threadId);
     const assistantMessages = messages.data.filter(m => m.role === "assistant");
 
     if (assistantMessages.length > 0) {
-        console.log("AI Response:", assistantMessages[0].content);
-        return assistantMessages[0].content;
+        Logger.info("final response from assistant", { messages: assistantMessages });
+        return generatedFiles;
     } else {
-        console.log("No text response from AI.");
-        return null;
+        Logger.warn("No text response from AI");
+        return generatedFiles;
     }
 }
 
