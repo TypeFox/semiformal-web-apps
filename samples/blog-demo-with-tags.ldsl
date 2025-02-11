@@ -1,0 +1,123 @@
+/**
+ * A simple blog
+ */
+/**
+ * Entities: Units that are translatable into DB Schema
+ */
+
+stack = ["react", "typescript", "tailwindcss", "create-react-app", "koa", "postgres"]
+
+entity User {
+    id: number
+    name: String
+    private password: String
+    email: String
+}
+
+entity Post {
+    id: number
+    title: String
+    content: String
+    createdAt: datetime
+    author: User
+    tags: Tag[]
+}
+
+entity Tag {
+    id: number
+    name: String
+    posts: Post[]
+}
+
+entity Comment {
+    id: number
+    post: Post
+    content: String
+}
+
+/**
+ * Components: Reusable UI elements
+ */
+component NavItem {
+    title: String
+    href: String
+}
+
+component Menu {
+    position: "top sticky"
+    navItems: String[]
+    searchInput: ui::input
+}
+
+component Footer {
+    copyrightContent: "Copyright 2025 (c) TypeFox GmbH"
+}
+
+page Home {
+    menu: Menu
+    recentPosts: Post[]
+    footer: Footer
+}
+
+component PostList {
+    posts: Post[]
+}
+
+page PostList {
+    menu: Menu
+    searchBar: ui::input
+    leftPanel: {
+        tags: Tag[]
+        position: "left"
+        width: "1/4 width"
+    }
+    posts: Post[]
+    footer: Footer
+}
+
+
+page TagPage {
+    menu: Menu
+    posts: Post[]
+    footer: Footer
+}
+
+page About {
+    menu: Menu
+    aboutMe: String
+    footer: Footer
+}
+
+/**
+ * Actions: Units that are translatable into REST API,
+ * They can include abstract queries
+ */
+action loadRecentPosts {
+    route: "/recent-posts"
+    method: "GET"
+    returns: "Recent 10 posts"
+    /* 
+    returns: from Post | sortBy(p => p.createdAt, "DESC") | limit(10)
+             * from Post as post, * from Author as author WHERE post.author = author |
+                filter(() => author.banned)
+    */
+}
+action searchPosts {
+    route: "/search-posts"
+    method: "GET"
+    params: "query"
+    returns: "select * from Post where title like '%query%'"
+}
+
+action loadTags {
+    route: "/tags"
+    method: "GET"
+    returns: "All tags"
+}
+
+action getPostsByTag {
+    route: "/posts-by-tag"
+    method: "GET"
+    params: "tagId"
+    returns: "Posts by tag"
+}
