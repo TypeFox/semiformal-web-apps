@@ -8,3 +8,4 @@ src/language/generated/
 syntaxes/
 .env
 samples/outputs
+.DS_Store
