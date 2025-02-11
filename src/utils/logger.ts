@@ -20,7 +20,8 @@ export class Logger {
                         level: 'error' 
                     }),
                     new winston.transports.File({ 
-                        filename: path.join(outputPath, 'combined.log') 
+                        filename: path.join(outputPath, 'combined.log'),
+                        level: 'debug'
                     }),
                     new winston.transports.Console({
                         format: winston.format.combine(

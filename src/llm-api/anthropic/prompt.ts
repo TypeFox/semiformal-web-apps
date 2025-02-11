@@ -28,7 +28,7 @@ export async function anthropicPrompt(generatedFilePath: string, destination: st
     const baseFolder = path.join(destination, name);
 
     // anthropic is stateless, we have to keep track of the thread
-    const messagesStack: Anthropic.MessageParam[] = [
+    let messagesStack: Anthropic.MessageParam[] = [
         { role: "user", content: "Generate the backend service"},
         { role: "assistant", content: ANTHROPIC_BACKEND_ASSISTANT_MESSAGE},
         { role: "user", content: json }
@@ -55,6 +55,8 @@ export async function anthropicPrompt(generatedFilePath: string, destination: st
 
     displayGeneratedFiles(backendFilesCreated, baseFolder, "backend");
 
+    // clean the messages stack
+    messagesStack = []
 
     messagesStack.push(
         { role: "user", content: "Generate the frontend service"},

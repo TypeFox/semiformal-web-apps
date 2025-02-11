@@ -5,7 +5,9 @@
  * Entities: Units that are translatable into DB Schema
  */
 
-stack = ["react", "typescript", "tailwindcss", "create-react-app"]
+// Sequelize is an ORM, i explicitly mention it here so it doesn't use
+// Prisma as the ORM, which I am unfamiliar with, and couldn't get it to work.
+stack = ["react", "typescript", "tailwindcss", "create-react-app", "sequelize==6.37.5"]
 
 entity User {
     id: number

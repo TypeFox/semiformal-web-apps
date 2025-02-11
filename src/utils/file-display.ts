@@ -21,14 +21,13 @@ export function displayGeneratedFiles(files: string[], baseDir: string, category
     });
 
     const filesByType = files.reduce((acc, file) => {
-        const relativePath = path.relative(baseDir, file);
         const ext = path.extname(file).toLowerCase();
         const type = getFileType(ext);
         
         if (!acc[type]) {
             acc[type] = [];
         }
-        acc[type].push(relativePath);
+        acc[type].push(file);
         return acc;
     }, {} as Record<string, string[]>);
 
