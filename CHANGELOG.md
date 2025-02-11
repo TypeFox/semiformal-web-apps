@@ -14,7 +14,12 @@ Patches are incremental Ids that resets every month.
 - Added model-name option to prompt command, to allow for testing various models
 
 Anthropic uses 2 system prompts, one for the backend and one for the frontend.
-With the backend being generated first, and the frontend being generated second.
+
+Since Anthropic is stateless, we have to manually keep track of the conversation, i.e
+sending the entire conversation history with each request.
+That's expensive, coming up with intermediate solution might be a better approach.
+Right now, the `frontend` and `backend` codebases are generated in separate runs, but one request 
+each.
 
 ### 25.2.1:
 Support for OpenAI API support
