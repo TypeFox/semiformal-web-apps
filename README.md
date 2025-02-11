@@ -12,13 +12,13 @@ The LLM is instructed to generate two folders, `frontend` and `backend` (for the
 ### Usage:
 
 #### CLI:
-Usage: `node bin/cli.js prompt [ldsl-path] -n [project-name] -l [llm-backend] -d [output-dir]`
+Usage: `node bin/cli.js prompt [ldsl-path] -n [project-name] -l [llm-backend] -d [output-dir] -m [model-name]`
 Arguments:
 - `ldsl-path`: Path to the dsl file
 - `project-name`: Name of your project, will be created under `output-dir`
 - `llm-backend`: `openai` or `anthropic`
 - `output-dir`: Directory to save the generated project
-- `model-name`: Name of the model to use (optional). Depends on the LLM backend.
+- `model-name`* (optional): Name of the model to use. Depends on the LLM backend.
 
 #### Requirements:
 1. Build the project: `npm run langium:generate && npm run build`
