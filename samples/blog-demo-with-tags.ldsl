@@ -21,6 +21,7 @@ entity Post {
     createdAt: datetime
     author: User
     tags: Tag[]
+    comments: Comment[]
 }
 
 entity Tag {
@@ -50,7 +51,7 @@ component Menu {
 }
 
 component Footer {
-    copyrightContent: "Copyright 2025 (c) TypeFox GmbH"
+    text: "Copyright 2025 (c) TypeFox GmbH"
 }
 
 page Home {
@@ -88,6 +89,14 @@ page About {
     footer: Footer
 }
 
+page Post {
+    menu: Menu
+    post: Post
+    comments: Comment[]
+    commentForm: ui::modal
+    footer: Footer
+}
+
 /**
  * Actions: Units that are translatable into REST API,
  * They can include abstract queries
@@ -120,4 +129,18 @@ action getPostsByTag {
     method: "GET"
     params: "tagId"
     returns: "Posts by tag"
+}
+
+action getPost {
+    route: "/post"
+    method: "GET"
+    params: "postId"
+    returns: "Post with comments"
+}
+
+action addComment {
+    route: "/add-comment"
+    method: "POST"
+    params: "postId"
+    returns: "Comment added"
 }
