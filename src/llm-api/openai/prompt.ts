@@ -55,6 +55,9 @@ When the service starts, some random data must be generated to test the service,
         Logger.info('Generated backend files:', { files: backendFiles });
         displayGeneratedFiles(backendFiles, destination, 'Backend');
     }
+    else {
+        Logger.warn("No backend files generated");
+    }
 
     spinner.start('Generating frontend service...');
     await client.beta.threads.messages.create(thread.id, {
@@ -84,6 +87,9 @@ The user expects a fully functional frontend application, with a complete UI.
     if (frontendFiles && frontendFiles.length > 0) {
         Logger.info('Generated frontend files:', { files: frontendFiles });
         displayGeneratedFiles(frontendFiles, destination, 'Frontend');
+    }
+    else {
+        Logger.warn("No frontend files generated");
     }
 
     Logger.info("Assistant finished successfully");
