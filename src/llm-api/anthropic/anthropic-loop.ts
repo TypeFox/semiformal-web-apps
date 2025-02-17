@@ -1,12 +1,19 @@
-import { ToolResponse } from "./anthropic-tools.js";
+import { ANTHROPIC_MAX_TOKENS, ToolResponse } from "./anthropic-tools.js";
 import { createFile } from "../prompt-utils/fs-utils.js";
-import { ANTHROPIC_SYSTEM_PROMPT_BACKEND, ANTHROPIC_SYSTEM_PROMPT_FRONTEND } from "./anthropic-tools.js";
-import { anthropicTools } from "./anthropic-tools.js";
+import { getBackendPrompt, getFrontendPrompt, anthropicTools } from "./anthropic-tools.js";
 import { Logger } from "../../utils/logger.js";
 import Anthropic from "@anthropic-ai/sdk";
 import path from "node:path";
 
-export async function anthropicLoop(client: Anthropic, messagesStack: Anthropic.MessageParam[], response: Anthropic.Message, baseFolder: string, category: string, aiModelName: string) {
+export async function anthropicLoop(
+    client: Anthropic, 
+    messagesStack: Anthropic.MessageParam[], 
+    response: Anthropic.Message, 
+    baseFolder: string, 
+    category: string, 
+    aiModelName: string,
+    notes?: string
+) {
     Logger.debug("anthropic response: ", response);
     const filesCreated: string[] = [];
     // push the assistant message to the stack
@@ -26,6 +33,11 @@ export async function anthropicLoop(client: Anthropic, messagesStack: Anthropic.
                 }
 
                 let tool: ToolResponse = toolCall as ToolResponse;
+
+                if(Object.keys(tool.input).length === 0) {
+                    Logger.error("No files to create received from anthropic");
+                    break;
+                }
 
                 for(let file of tool.input.files) {
                     let fileName = file.filename;
@@ -50,16 +62,16 @@ export async function anthropicLoop(client: Anthropic, messagesStack: Anthropic.
 
         Logger.debug("anthropicRequest", {
             model: aiModelName,
-            system: category === "backend" ? ANTHROPIC_SYSTEM_PROMPT_BACKEND : ANTHROPIC_SYSTEM_PROMPT_FRONTEND,
-            max_tokens: 5000,
+            system: category === "backend" ? getBackendPrompt() : getFrontendPrompt(notes),
+            max_tokens: ANTHROPIC_MAX_TOKENS,
             messages: messagesStack,
             tools: anthropicTools
         });
         
         response = await client.messages.create({
             model: aiModelName,
-            system: category === "backend" ? ANTHROPIC_SYSTEM_PROMPT_BACKEND : ANTHROPIC_SYSTEM_PROMPT_FRONTEND,
-            max_tokens: 5000,
+            system: category === "backend" ? getBackendPrompt() : getFrontendPrompt(notes),
+            max_tokens: ANTHROPIC_MAX_TOKENS,
             messages: messagesStack,
             tools: anthropicTools
         });
