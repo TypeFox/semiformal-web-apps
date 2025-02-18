@@ -43,7 +43,7 @@ export async function anthropicLoop(
                     let fileName = file.filename;
                     let fileContent = file.content;
                     let filePath = file.folder;
-
+                    Logger.debug("Creating file: ", file);
                     createFile(baseFolder, filePath, fileName, fileContent);
                     filesCreated.push(path.join(filePath, fileName));
                 }
@@ -75,6 +75,12 @@ export async function anthropicLoop(
             messages: messagesStack,
             tools: anthropicTools
         });
+    }
+
+    if(response.stop_reason === "stop_sequence") {
+        Logger.debug("Anthropic loop finished");
+    } else if (response.stop_reason === "max_tokens") {
+        Logger.error("Anthropic loop finished with a max tokens error");
     }
     return filesCreated;
 }

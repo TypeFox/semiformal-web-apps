@@ -134,7 +134,10 @@ specified in the project description.
 
 Finally, make sure to generate a file called \`NOTES.md\` that contains all the information you think are important,
 for the AI assistant to generate the frontend code. You can use this as a small context to help you generate the frontend code
-in the future. You can document anything you think is important (such as API routes, etc).
+in the future. You can document anything you think is important including but not limited to:
+- API routes and their parameters and response objects, data types, etc
+- Entity relationships
+- Any other information you think is important
 `
 
 
@@ -202,6 +205,7 @@ Frontend code must follows the following constraints (only relevant to frontend 
 - If you have any addition that fits in the project, or might provide value, do not hesitate to add it.
 - Do not generate \`reportWebVitals\`.
 - For icons use react-icons (don't forget to add it as a dependency).
+- Avoid importing unused symbol and use proper type system (we use strict mode and no-unused-vars)
 
 Last remarks:
 - backend will run on localhost:3001
