@@ -89,7 +89,7 @@ This project uses `langfuse` (https://langfuse.com/) for telemetry (thanks to ve
 To enable it you need a running instance of `langfuse` (just cloning the repo and running `docker compose up` to get started), and set the following environment variables:
 - `LANGFUSE_PUBLIC_KEY`: Your Langfuse public key
 - `LANGFUSE_SECRET_KEY`: Your Langfuse secret key
-- `LANGFUSE_BASEURL`: Your Langfuse base URL
+- `LANGFUSE_BASEURL`: Your Langfuse base URL (should be `http://localhost:3000` if you are running a local instance)
 
 #### Further reading:
 - Vercel's `ai` package: [https://github.com/vercel/ai](https://github.com/vercel/ai)
