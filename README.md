@@ -18,8 +18,10 @@ Arguments:
 - `project-name`: Name of your project, will be created under `output-dir`
 - `provider`: `openai-assistant` or `openai`, `anthropic`, etc
 - `output-dir`: Directory to save the generated project
-- `model-name`* (optional): Name of the model to use. Depends on the provider.
-- `max-tokens`* (optional): Maximum number of tokens to use. Defaults to 4096. Model dependent, for `anthropic` use 8192.
+- `model-name`*: Name of the model to use. Depends on the provider.
+- `max-tokens`*: Maximum number of tokens to use. Defaults to 4096. Model dependent, for `anthropic` use 8192.
+
+(*) means optional
 
 #### Requirements:
 1. Build the project: `npm run langium:generate && npm run build`
