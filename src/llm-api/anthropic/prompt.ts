@@ -12,6 +12,7 @@ import { spinner } from '../../utils/spinner.js';
 import fs from 'node:fs';
 
 /**
+ * @deprecated in favor of the prompt agent
  * Anthropic prompt is stateless, we have to keep track of the conversation
  * manually. This handled within the anthropic-loop.ts file.
  */

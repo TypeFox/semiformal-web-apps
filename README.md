@@ -12,30 +12,46 @@ The LLM is instructed to generate two folders, `frontend` and `backend` (for the
 ### Usage:
 
 #### CLI:
-Usage: `node bin/cli.js prompt [ldsl-path] -n [project-name] -l [llm-backend] -d [output-dir] -m [model-name]`
+Usage: `node bin/cli.js prompt [ldsl-path] -n [project-name] -p [provider] -d [output-dir] -m [model-name] -t [max-tokens]`
 Arguments:
 - `ldsl-path`: Path to the dsl file
 - `project-name`: Name of your project, will be created under `output-dir`
-- `llm-backend`: `openai` or `anthropic`
+- `provider`: `openai-assistant` or `openai`, `anthropic`, etc
 - `output-dir`: Directory to save the generated project
-- `model-name`* (optional): Name of the model to use. Depends on the LLM backend.
+- `model-name`* (optional): Name of the model to use. Depends on the provider.
+- `max-tokens`* (optional): Maximum number of tokens to use. Defaults to 4096. Model dependent, for `anthropic` use 8192.
 
 #### Requirements:
 1. Build the project: `npm run langium:generate && npm run build`
-2. Have `OPENAI_API_KEY` exported or saved in `.env`.
-3. Have `ANTHROPIC_API_KEY` exported or saved in `.env`.
+2. Have `[provider]_API_KEY` exported or saved in `.env`, where `provider` is the LLM provider you are using (e.g. `OPENAI`).
 4. (OpenAI Only) If you want to reuse an assistant, you can paste its ID into your env as `SEMIFORM_ASSISTANT_ID`.
+
+#### Notes on OpenAI providers:
+
+This project uses vercel's `ai` package to communicate with various LLM providers.
+Vercel's `ai` package is a wrapper and supports mostly common operations. 
+
+OpenAI provides an assistant API, which is a more powerful API for interacting with models, which is not supported by vercel's `ai` package. Hence we have our own implementation for OpenAI's Assistant API.
+
+When creating a project, the `-p` parameter accepts a `provider` string, which can be one of the following:
+- `openai-assistant`: Use OpenAI's Assistant API
+- `openai`: Use OpenAI's `gpt-4o` model
+- `anthropic`: Use Anthropic's `claude-3-5-sonnet` model
+- `mistral`: Use Mistral's `mistral-large-latest` model
+- and more
+
+`openai-assistant` is our own implementation for OpenAI's Assistant API. The rest are supported by vercel's `ai` package.
+
 
 #### Example:
 Let's compare the two LLM backends, for the same DSL file!
 
-
 We will use the test case `samples/blog-demo.ldsl` and assume you have **both** keys exported, so all you need is
 1. Make sure the folder `samples/outputs` exists
-2. Run `node --env-file=.env bin/cli.js prompt samples/blog-demo.ldsl -n blog-by-openai -l openai -d samples/outputs`
+2. Run `node --env-file=.env bin/cli.js prompt samples/blog-demo.ldsl -n blog-by-openai -p openai-assistant -d samples/outputs`
 4. Keep an eye on the console output
 5. Have a look into `samples/outputs/blog-by-openai`
-6. Run `node --env-file=.env bin/cli.js prompt samples/blog-demo.ldsl -n blog-by-anthropic -l anthropic -d samples/outputs`
+6. Run `node --env-file=.env bin/cli.js prompt samples/blog-demo.ldsl -n blog-by-anthropic -p anthropic -d samples/outputs -t 8192`
 7. Have a look at both folders `samples/outputs/blog-by-openai` and `samples/outputs/blog-by-anthropic`.
 8. The backend should be runnable with `docker compose up` and the frontend with `npm i && npm run start`.
 
@@ -53,7 +69,7 @@ Models are vendor specific, below is a short list of models for you to pick one 
 | OpenAI | `o1` (-> `o1-2024-12-17`, `o1-mini` (-> `o1-mini-2024-09-12`)) | Reasoning models. | No (locked behind tier-3) |
 | OpenAI | `o3-mini` (-> `o3-mini-2025-01-31`) | Smaller than `o1` and superior to `o1-mini`. High Intelligence. | No (locked behind tier-3) |
 
-By default, if no model is specified, `gpt-4o` will be used for openai and `claude-3-5-sonnet-20241022` will be used for anthropic.
+By default, if no model is specified, `gpt-4-turbo` will be used for openai and `claude-3-5-sonnet-20241022` will be used for anthropic.
 
 More models can be found here:
 - OpenAI: [https://platform.openai.com/docs/models](https://platform.openai.com/docs/models)
@@ -66,4 +82,7 @@ Few notes:
 To check account tier, have a look at the limit section [https://platform.openai.com/settings/organization/limits](https://platform.openai.com/settings/organization/limits)
 
 
+#### Further reading:
+- Vercel's `ai` package: [https://github.com/vercel/ai](https://github.com/vercel/ai)
+- `ai` Providers: [https://sdk.vercel.ai/providers/ai-sdk-providers](https://sdk.vercel.ai/providers/ai-sdk-providers)
 

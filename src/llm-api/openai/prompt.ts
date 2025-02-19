@@ -8,7 +8,7 @@ import { spinner } from '../../utils/spinner.js';
 import { Logger } from '../../utils/logger.js';
 import { displayGeneratedFiles } from '../../utils/file-display.js';
 
-export async function openaiPrompt(generatedFilePath: string, destination: string, name: string, model: Model, aiModelName: string) {
+export async function openaiAssistantPrompt(generatedFilePath: string, destination: string, name: string, model: Model, aiModelName: string) {
     const baseFolder = path.join(destination, name);
 
     const client = new OpenAI({

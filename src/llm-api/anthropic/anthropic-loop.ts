@@ -5,6 +5,10 @@ import { Logger } from "../../utils/logger.js";
 import Anthropic from "@anthropic-ai/sdk";
 import path from "node:path";
 
+/**
+ * @deprecated
+ * Use the common prompt instead
+ */
 export async function anthropicLoop(
     client: Anthropic, 
     messagesStack: Anthropic.MessageParam[], 

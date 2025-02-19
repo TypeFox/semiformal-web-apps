@@ -1,20 +1,20 @@
-import type { Model } from '../language/generated/ast.js';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { extractDestinationAndName } from './cli-util.js';
-import { LLMBackend } from './main.js';
-import { openaiPrompt } from '../llm-api/openai/prompt.js';
-import { anthropicPrompt } from '../llm-api/anthropic/prompt.js';
+import type { Model } from '../language/generated/ast.js';
+import { defaultModels } from '../llm-api/common/default-models.js';
+import { PromptAgent } from '../llm-api/common/prompt-agent.js';
+import { openaiAssistantPrompt } from '../llm-api/openai/prompt.js';
 import { Logger } from '../utils/logger.js';
+import { extractDestinationAndName } from './cli-util.js';
+import { PromptOptions } from './main.js';
 
-const DEFAULT_MODELS = {
-    "openai": "gpt-4o",
-    "anthropic": "claude-3-5-sonnet-20241022"
-}
-
-export async function generatePrompt(model: Model, filePath: string, llmModel: LLMBackend, aiModelName: string | undefined, name: string, destination: string) {
-    if (!aiModelName) {
-        aiModelName = DEFAULT_MODELS[llmModel];
+export async function generatePrompt(
+    model: Model,
+    filePath: string,
+    opts: PromptOptions) {
+    let { name, destination, provider, modelName, maxTokens, host } = opts;
+    if (!modelName) {
+        modelName = defaultModels[provider];
     }
 
     const data = extractDestinationAndName(filePath, destination);
@@ -28,19 +28,21 @@ export async function generatePrompt(model: Model, filePath: string, llmModel: L
     // initialize logger
     Logger.initialize(baseDir);
 
-    switch(llmModel) {
-        case "openai":
-            console.log("Generating project with OpenAI");
-            await openaiPrompt(generatedFilePath, data.destination, name, model, aiModelName);
-            break;
-        case "anthropic":
-            console.log("Generating project with Anthropic");
-            await anthropicPrompt(generatedFilePath, data.destination, name, model, aiModelName);
+    switch(provider) {
+        case "openai-assistant":
+            console.log("Generating project with OpenAI Assistant");
+            await openaiAssistantPrompt(generatedFilePath, data.destination, name, model, modelName);
             break;
         default:
-            console.error(`Unknown LLM "${llmModel}"`);
+            if (provider in defaultModels) {
+                let agent = new PromptAgent(provider, modelName, model, data.destination, name, maxTokens ? parseInt(maxTokens) : undefined, host);
+                await agent.generate();
+            }
+            else {
+                Logger.error(`Unknown LLM Provider: "${provider}"`);
+            }
             break;
     }
     
-    console.log(`Prompt generated at ${generatedFilePath}`);
+    console.log(`Finished, output: ${generatedFilePath}`);
 }
