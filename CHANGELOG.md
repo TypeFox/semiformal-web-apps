@@ -10,7 +10,7 @@ Patches are incremental Ids that resets every month.
 
 ### 25.2.3:
 - Integrated vercel `ai` sdk allowing us to prompt various providers
-- Renamed `openai` to `openai-assistant`: `openai` uses vercel `openai` provider, `openai-assistant` uses our own implementation for OpenAI's Assistant API.
+- Renamed our custom implementation of `openai` to `openai-assistant`. Now, `openai` uses vercel `@ai-sdk/openai` provider, while `openai-assistant` uses our own implementation for OpenAI's Assistant API.
 - Added support for `langfuse` telemetry
 
 ### 25.2.2:
