@@ -8,6 +8,10 @@ Since this project is in early development, a date-based versioning scheme is us
 Follows loosely ubuntu versioning scheme: `YY.MM.patch`.
 Patches are incremental Ids that resets every month.
 
+### 25.2.3:
+- Integrated vercel `ai` sdk allowing us to prompt various providers
+- Renamed `openai` to `openai-assistant`: `openai` uses vercel `openai` provider, `openai-assistant` uses our own implementation for OpenAI's Assistant API.
+
 ### 25.2.2:
 - Added support for anthropic
 - Removed single prompt mode and multi-prompt mode
