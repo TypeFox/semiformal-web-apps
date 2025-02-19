@@ -83,6 +83,13 @@ Few notes:
 
 To check account tier, have a look at the limit section [https://platform.openai.com/settings/organization/limits](https://platform.openai.com/settings/organization/limits)
 
+#### Telemetry:
+
+This project uses `langfuse` (https://langfuse.com/) for telemetry (thanks to vercel's `ai` package).
+To enable it you need a running instance of `langfuse` (just cloning the repo and running `docker compose up` to get started), and set the following environment variables:
+- `LANGFUSE_PUBLIC_KEY`: Your Langfuse public key
+- `LANGFUSE_SECRET_KEY`: Your Langfuse secret key
+- `LANGFUSE_BASEURL`: Your Langfuse base URL
 
 #### Further reading:
 - Vercel's `ai` package: [https://github.com/vercel/ai](https://github.com/vercel/ai)
