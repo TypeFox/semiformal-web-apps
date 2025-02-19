@@ -18,7 +18,6 @@ import { cerebras } from '@ai-sdk/cerebras';
 import { groq } from '@ai-sdk/groq';
 import { perplexity } from '@ai-sdk/perplexity';
 import { ollama, createOllama } from 'ollama-ai-provider';
-import { Laminar } from '@lmnr-ai/lmnr';
 import path from "path";
 import { Logger } from '../../utils/logger.js';
 import { spinner } from '../../utils/spinner.js';
@@ -27,6 +26,10 @@ import { createFilesSchema } from "./tools.js";
 import { createFile } from "../prompt-utils/fs-utils.js";
 import { COMMON_BACKEND_ASSISTANT_MESSAGE, COMMON_FRONTEND_ASSISTANT_MESSAGE, getBackendPrompt, getFrontendPrompt } from "./prompts-content.js";
 import fs from "node:fs";
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { LangfuseExporter } from 'langfuse-vercel';
+
 
 /**
  * List of supported Provider Models, as supported by the AI SDK
@@ -111,6 +114,14 @@ export class PromptAgent {
      * Whether to use telemetry (Laminar)
      */
     private useTelemetry: boolean = true;
+
+    /**
+     * OpenTelemetry SDK instance
+     */
+    private sdk = process.env.LANGFUSE_BASEURL ? new NodeSDK({
+        traceExporter: new LangfuseExporter(),
+        instrumentations: [getNodeAutoInstrumentations()],
+    }) : undefined;
     
     constructor(provider: ProviderModel, model: string, dslModel: Model, destination: string, projectName: string, maxTokens?: number, baseURL?: string) {
         this.provider = provider;
@@ -121,11 +132,14 @@ export class PromptAgent {
         this.baseURL = baseURL ?? null;
         this.messageHistory = [];
 
-        this.initializeTelemetry();
         this.providerInstance = this.createProvider();
         this.maxTokens = maxTokens ?? 4096;
+        this.sdk?.start();
     }
     
+    /**
+     * Generate the project
+     */
     public async generate() {
         Logger.info(`Generating project ${this.projectName} with ${this.provider} model ${this.model}`);
         this.dslJson = this.generateDSLJsonFromModel(this.dslModel);
@@ -133,8 +147,13 @@ export class PromptAgent {
         let backendFiles = await this.generateBackend();
         let notes = await this.getNotes();
         await this.generateFrontend(backendFiles, notes);
+        await this.finish();
     }
 
+    /**
+     * Generate the backend service
+     * @returns List of generated files
+     */
     private async generateBackend() {
         this.messageHistory =  [
             { role: "user", content: "Generate the backend service"},
@@ -150,6 +169,11 @@ export class PromptAgent {
         return files;
     }
 
+    /**
+     * Generate the frontend service
+     * @param backendFiles - List of backend files, will be added to the message history
+     * @param notes - Notes file content if it exists
+     */
     private async generateFrontend(backendFiles: string[], notes: string | undefined) {
         this.messageHistory.push({
             role: "user",
@@ -166,6 +190,12 @@ export class PromptAgent {
         displayGeneratedFiles(frontendFiles, this.baseFolder, "frontend");
     }
 
+    /**
+     * Prompt the AI and generate the files
+     * @param prompt - Prompt to use
+     * @param mode - Mode to use
+     * @returns List of generated files
+     */
     private async promptAndGenerateFiles(prompt: string, mode: "backend" | "frontend") {
         const result = await generateObject({
             model: this.providerInstance,
@@ -187,6 +217,11 @@ export class PromptAgent {
         return result.object.files.map(e => e.filepath);
     }
 
+    /**
+     * Generate the DSL JSON from the DSL model
+     * @param model - DSL model
+     * @returns DSL JSON
+     */
     private generateDSLJsonFromModel(model: Model) {
         const services = createLaDslServices(NodeFileSystem).LaDsl;
         const json = services.serializer.JsonSerializer.serialize(model, {
@@ -196,6 +231,10 @@ export class PromptAgent {
         return json;
     }
 
+    /**
+     * Create the provider instance
+     * @returns Provider instance
+     */
     private createProvider() {
         switch (this.provider) {
             case "openai":
@@ -238,16 +277,10 @@ export class PromptAgent {
         }
     }
 
-    private initializeTelemetry() {
-        if (process.env.LMNR_API_KEY) {
-            this.useTelemetry = true;
-            Laminar.initialize({
-                projectApiKey: process.env.LMNR_API_KEY,
-                baseUrl: 'http://localhost:5667/'
-            });
-        }
-    }
-
+    /**
+     * Get the notes file content
+     * @returns Notes file content or undefined if the file does not exist
+     */
     private async getNotes() {
         const notesFilePath = path.join(this.baseFolder, "backend", "NOTES.md");
         let notes: string | undefined = undefined;
@@ -258,5 +291,12 @@ export class PromptAgent {
             Logger.warn("AI failed to generate the notes file (not found) ", notesFilePath);
         }
         return notes;
+    }
+
+    /**
+     * Gracefully shutdown the OpenTelemetry SDK
+     */
+    private async finish() {
+        await this.sdk?.shutdown();
     }
 }
