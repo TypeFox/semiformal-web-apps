@@ -37,13 +37,19 @@ component NavItem {
     title: String
     href: String
 }
-
+/**
+ * Menu component, sticky, purple background
+ * items centered
+ */
 component Menu {
     navItems: String[]
     searchInput: ui::input
 }
 
 component Footer {
+    /**
+     * Copyright content, saying (c) 2025 The FoxTeam
+     */
     copyrightContent: String
 }
 
