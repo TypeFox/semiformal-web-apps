@@ -24,9 +24,11 @@ Arguments:
 (*) means optional
 
 #### Requirements:
-1. Build the project: `npm run langium:generate && npm run build`
-2. Have `[provider]_API_KEY` exported or saved in `.env`, where `provider` is the LLM provider you are using (e.g. `OPENAI`).
-4. (OpenAI Only) If you want to reuse an assistant, you can paste its ID into your env as `SEMIFORM_ASSISTANT_ID`.
+1. Install dependencies: `npm i`
+2. Build the project: `npm run langium:generate && npm run build`
+3. Create a `.env` file in the root of this project.
+4. Have `[provider]_API_KEY` exported or saved in `.env`, where `provider` is the LLM provider you are using (e.g. `OPENAI`).
+5. (OpenAI Only) If you want to reuse an assistant, you can paste its ID into your env as `SEMIFORM_ASSISTANT_ID`.
 
 #### Notes on OpenAI providers:
 
