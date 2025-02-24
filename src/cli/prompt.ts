@@ -43,6 +43,4 @@ export async function generatePrompt(
             }
             break;
     }
-    
-    console.log(`Finished, output: ${generatedFilePath}`);
 }

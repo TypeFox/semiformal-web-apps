@@ -92,7 +92,6 @@ The user expects a fully functional frontend application, with a complete UI.
         Logger.warn("No frontend files generated");
     }
 
-    Logger.info("Assistant finished successfully");
     spinner.succeed('Generation completed successfully');
 }
 
