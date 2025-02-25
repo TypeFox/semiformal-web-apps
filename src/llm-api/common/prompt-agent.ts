@@ -1,34 +1,31 @@
-import { CoreMessage, generateObject } from "ai";
-import type { Model } from '../../language/generated/ast.js';
-import { createLaDslServices } from '../../language/la-dsl-module.js';
-import { NodeFileSystem } from "langium/node";
-import { openai } from "@ai-sdk/openai";
+import { bedrock } from "@ai-sdk/amazon-bedrock";
 import { anthropic } from "@ai-sdk/anthropic";
 import { azure } from "@ai-sdk/azure";
-import { bedrock } from "@ai-sdk/amazon-bedrock";
-import { google } from "@ai-sdk/google";
-import { vertex } from "@ai-sdk/google-vertex";
-import { mistral } from "@ai-sdk/mistral";
-import { xai } from "@ai-sdk/xai";
-import { togetherai } from '@ai-sdk/togetherai';
-import { fireworks } from '@ai-sdk/fireworks';
+import { cerebras } from '@ai-sdk/cerebras';
 import { deepinfra } from '@ai-sdk/deepinfra';
 import { deepseek } from '@ai-sdk/deepseek';
-import { cerebras } from '@ai-sdk/cerebras';
+import { fireworks } from '@ai-sdk/fireworks';
+import { google } from "@ai-sdk/google";
+import { vertex } from "@ai-sdk/google-vertex";
 import { groq } from '@ai-sdk/groq';
+import { mistral } from "@ai-sdk/mistral";
+import { openai } from "@ai-sdk/openai";
 import { perplexity } from '@ai-sdk/perplexity';
-import { ollama, createOllama } from 'ollama-ai-provider';
+import { togetherai } from '@ai-sdk/togetherai';
+import { xai } from "@ai-sdk/xai";
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { CoreMessage, generateObject } from "ai";
+import { LangfuseExporter } from 'langfuse-vercel';
+import fs from "node:fs";
+import { createOllama, ollama } from 'ollama-ai-provider';
 import path from "path";
+import { displayGeneratedFiles } from '../../utils/file-display.js';
 import { Logger } from '../../utils/logger.js';
 import { spinner } from '../../utils/spinner.js';
-import { displayGeneratedFiles } from '../../utils/file-display.js';
-import { createFilesSchema } from "./tools.js";
 import { createFile } from "../prompt-utils/fs-utils.js";
 import { COMMON_BACKEND_ASSISTANT_MESSAGE, COMMON_FRONTEND_ASSISTANT_MESSAGE, getBackendPrompt, getFrontendPrompt } from "./prompts-content.js";
-import fs from "node:fs";
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { LangfuseExporter } from 'langfuse-vercel';
+import { createFilesSchema } from "./tools.js";
 
 
 /**
@@ -83,14 +80,9 @@ export class PromptAgent {
 
 
     /**
-     * DSL model to use for the generation
+     * DSL text to use for the generation, either a JSON or raw DSL content
      */
-    private dslModel: Model;
-
-    /**
-     * DSL JSON representation
-     */
-    private dslJson: string | null = null;
+    private dslText: string;
 
     /**
      * Message history: Conversation history with the AI
@@ -123,10 +115,10 @@ export class PromptAgent {
         instrumentations: [getNodeAutoInstrumentations()],
     }) : undefined;
     
-    constructor(provider: ProviderModel, model: string, dslModel: Model, destination: string, projectName: string, maxTokens?: number, baseURL?: string) {
+    constructor(provider: ProviderModel, model: string, dslText: string, destination: string, projectName: string, maxTokens?: number, baseURL?: string) {
         this.provider = provider;
         this.model = model;
-        this.dslModel = dslModel;
+        this.dslText = dslText;
         this.projectName = projectName;
         this.baseFolder = path.join(destination, projectName);
         this.baseURL = baseURL ?? null;
@@ -142,7 +134,6 @@ export class PromptAgent {
      */
     public async generate() {
         Logger.info(`Generating project ${this.projectName} with ${this.provider} model ${this.model}`);
-        this.dslJson = this.generateDSLJsonFromModel(this.dslModel);
 
         let backendFiles = await this.generateBackend();
         let notes = await this.getNotes();
@@ -158,7 +149,7 @@ export class PromptAgent {
         this.messageHistory =  [
             { role: "user", content: "Generate the backend service"},
             { role: "assistant", content: COMMON_BACKEND_ASSISTANT_MESSAGE},
-            { role: "user", content: this.dslJson! }
+            { role: "user", content: this.dslText }
         ]
 
         spinner.start('Generating backend service...');
@@ -182,7 +173,7 @@ export class PromptAgent {
     
         this.messageHistory.push({ role: "user", content: "Generate the frontend service"})
         this.messageHistory.push({ role: "assistant", content: COMMON_FRONTEND_ASSISTANT_MESSAGE})
-        this.messageHistory.push({ role: "user", content: this.dslJson! })
+        this.messageHistory.push({ role: "user", content: this.dslText })
     
         spinner.start('Generating frontend service...');
         let frontendFiles = await this.promptAndGenerateFiles(getFrontendPrompt(notes), "frontend");
@@ -215,20 +206,6 @@ export class PromptAgent {
         }
 
         return result.object.files.map(e => e.filepath);
-    }
-
-    /**
-     * Generate the DSL JSON from the DSL model
-     * @param model - DSL model
-     * @returns DSL JSON
-     */
-    private generateDSLJsonFromModel(model: Model) {
-        const services = createLaDslServices(NodeFileSystem).LaDsl;
-        const json = services.serializer.JsonSerializer.serialize(model, {
-            comments: true,
-            space: 4
-        });
-        return json;
     }
 
     /**
