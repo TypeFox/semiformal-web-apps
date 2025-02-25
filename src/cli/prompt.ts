@@ -39,8 +39,10 @@ export async function generatePrompt(
             if (provider in defaultModels) {
                 let dslContent: string = "";
                 if (opts.text) {
+                    Logger.info(`Prompting with DSL content as TEXT`);
                     dslContent = await fs.promises.readFile(filePath, 'utf-8');
                 } else {
+                    Logger.info(`Prompting with DSL content as JSON`);
                     const services = createLaDslServices(NodeFileSystem).LaDsl;
                     dslContent = services.serializer.JsonSerializer.serialize(model, {
                         comments: true,
