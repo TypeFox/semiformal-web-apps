@@ -259,7 +259,7 @@ export class PromptAgent {
      * @returns Notes file content or undefined if the file does not exist
      */
     private async getNotes() {
-        const notesFilePath = path.join(this.baseFolder, "backend", "NOTES.md");
+        const notesFilePath = path.join(this.baseFolder, "NOTES.md");
         let notes: string | undefined = undefined;
         if (fs.existsSync(notesFilePath)) {
             notes = fs.readFileSync(notesFilePath, "utf8");

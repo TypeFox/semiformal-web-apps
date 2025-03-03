@@ -4,8 +4,13 @@ import { Logger } from '../../utils/logger.js';
 
 export async function createFile(baseFolder: string, folder: string, filename: string, content: string | object) {
     try {
-        let dist = path.join(baseFolder, folder);
+        let dist = filename.endsWith("NOTES.md") ? baseFolder : path.join(baseFolder, folder);
         let fullPath = path.join(dist, filename);
+
+        if (filename.endsWith("NOTES.md")) {
+            Logger.info(`Creating notes file in ${fullPath}`);
+        }
+
         let baseDir = path.dirname(fullPath);
         fs.mkdirSync(baseDir, { recursive: true });
         fs.writeFileSync(fullPath, typeof content === "string" ? content : JSON.stringify(content));
