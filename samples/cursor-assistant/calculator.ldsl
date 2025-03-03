@@ -1,0 +1,75 @@
+
+/** 
+ * Represents a calculation entry in the history
+ */
+entity CalculationHistory {
+    expression: String
+    result: String
+    timestamp: datetime
+}
+
+/**
+ * Calculator display component showing both current input and result
+ */
+component Display {
+    value: String
+    result: String
+}
+
+/**
+ * Calculator button component
+ */
+component CalcButton {
+    /** Text to display on the button */
+    label: String
+    /** Optional color style for the button */
+    style: String
+}
+
+/**
+ * History display component showing past calculations
+ */
+component HistoryList {
+    history: CalculationHistory[]
+}
+
+/**
+ * Main calculator component combining display, buttons, and history
+ */
+component Calculator {
+    display: Display
+    /** Grid layout for calculator buttons */
+    buttonGrid: {
+        numbers: CalcButton[]
+        operators: CalcButton[]
+        /** Red background button for emphasis */
+        equals: CalcButton
+        clear: CalcButton
+    }
+    history: HistoryList
+}
+
+/**
+ * Action to perform calculation and store in history
+ */
+action calculate {
+    route: "/api/calculate"
+    method: "POST"
+    returns: "{ result: string }"
+}
+
+/**
+ * Action to fetch calculation history
+ */
+action getHistory {
+    route: "/api/history"
+    method: "GET"
+    returns: "CalculationHistory[]"
+}
+
+/**
+ * Main calculator page
+ */
+page CalculatorPage {
+    calculator: Calculator
+} 
