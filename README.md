@@ -3,6 +3,13 @@ semiform
 
 A semi-formal DSL for prompting LLMs.
 
+
+> **Note**
+>
+> If you are here for the full power of semiform, you may also want to read [./README.assistant.md](./README.assistant.md)
+> This README is still a prerequisite to keep on reading!
+
+
 ### How does this work?
 Current, the AST is serialized as JSON and sent to the assistant.
 The system prompts explains the model's structure and semantics.
@@ -19,7 +26,8 @@ Arguments:
 - `provider`: `openai-assistant` or `openai`, `anthropic`, etc
 - `output-dir`: Directory to save the generated project
 - `model-name`*: Name of the model to use. Depends on the provider.
-- `max-tokens`*: Maximum number of tokens to use. Defaults to 4096. Model dependent, for `anthropic` use 8192.
+- `max-tokens`*: Maximum number of tokens to use. Defaults to 4096. Model dependent, for `anthropic` use 8192. Please checkout [./model-info.md](model-info.md) for more information. 
+- `--text`*: A flag, if enabled, instead of serializing the DSL as a JSON, the DSL raw text file will be sent to the LLM for prompting. Useful for comparing `json` vs `text`.
 
 (*) means optional
 
