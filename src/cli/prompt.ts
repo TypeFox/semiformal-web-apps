@@ -7,6 +7,8 @@ import { openaiAssistantPrompt } from '../llm-api/openai/prompt.js';
 import { Logger } from '../utils/logger.js';
 import { extractDestinationAndName } from './cli-util.js';
 import { PromptOptions } from './main.js';
+import { NodeFileSystem } from 'langium/node';
+import { createLaDslServices } from '../language/la-dsl-module.js';
 
 export async function generatePrompt(
     model: Model,
@@ -35,7 +37,20 @@ export async function generatePrompt(
             break;
         default:
             if (provider in defaultModels) {
-                let agent = new PromptAgent(provider, modelName, model, data.destination, name, maxTokens ? parseInt(maxTokens) : undefined, host);
+                let dslContent: string = "";
+                if (opts.text) {
+                    Logger.info(`Prompting with DSL content as TEXT`);
+                    dslContent = await fs.promises.readFile(filePath, 'utf-8');
+                } else {
+                    Logger.info(`Prompting with DSL content as JSON`);
+                    const services = createLaDslServices(NodeFileSystem).LaDsl;
+                    dslContent = services.serializer.JsonSerializer.serialize(model, {
+                        comments: true,
+                        space: 4
+                    });
+                }
+
+                let agent = new PromptAgent(provider, modelName, dslContent, data.destination, name, maxTokens ? parseInt(maxTokens) : undefined, host);
                 await agent.generate();
             }
             else {

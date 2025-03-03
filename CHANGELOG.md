@@ -8,6 +8,12 @@ Since this project is in early development, a date-based versioning scheme is us
 Follows loosely ubuntu versioning scheme: `YY.MM.patch`.
 Patches are incremental Ids that resets every month.
 
+### 25.3.1:
+- Added new CLI flag to `--text` to prompt the DSL as raw text instead of `json`. Use this if you want to compare the impact for the DSL format. (Default is JSON unless the flag is specified)
+- `NOTES.md` is now hard-coded to be saved in the base folder (LLM is not always consistent with the output folder of notes file)
+- Allow the schema of tool call to be a `string`, because it sometimes returns a valid JSON .. except as a `string`. If that is the case, further validation is applied for consistency.
+- Added cursor rules to test the agent (step 3 of our initial plan).
+
 ### 25.2.3:
 - Integrated vercel `ai` sdk allowing us to prompt various providers
 - Renamed our custom implementation of `openai` to `openai-assistant`. Now, `openai` uses vercel `@ai-sdk/openai` provider, while `openai-assistant` uses our own implementation for OpenAI's Assistant API.

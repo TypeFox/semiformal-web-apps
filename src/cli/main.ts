@@ -42,6 +42,8 @@ export type PromptOptions = {
     modelName?: string;
     maxTokens?: string;
     host?: string;
+    // When enabled, the DSL content is sent as text instead of JSON
+    text?: boolean;
 }
 
 // We need to support the old "openai-assistant" provider for backward compatibility with
@@ -70,6 +72,7 @@ export default function(): void {
         .option("-m, --model-name <name>", "name of the model to use, optional (gpt-4o, claude-3-5-sonnet-20241022, etc.)")
         .option("-h, --host <host>", "host to use, for self-hosted models")
         .option("-t, --max-tokens <tokens>", "max tokens to use, default: 4096")
+        .option("--text", "Send DSL content as text instead of JSON")
         .description("generates LLM response given a DSL source file")
         .action(generatePromptAction);
 

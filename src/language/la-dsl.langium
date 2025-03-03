@@ -90,7 +90,7 @@ ActionAttribute:
  * A builtin entity type
  */
 BuiltinEntityType returns string:
-    'String' | 'number' | 'boolean' | 'datetime';
+    'String' | 'number' | 'boolean' | 'datetime' | 'json';
 
 /**
  * A UI component
