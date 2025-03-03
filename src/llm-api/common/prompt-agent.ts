@@ -25,7 +25,7 @@ import { Logger } from '../../utils/logger.js';
 import { spinner } from '../../utils/spinner.js';
 import { createFile } from "../prompt-utils/fs-utils.js";
 import { COMMON_BACKEND_ASSISTANT_MESSAGE, COMMON_FRONTEND_ASSISTANT_MESSAGE, getBackendPrompt, getFrontendPrompt } from "./prompts-content.js";
-import { createFilesSchema } from "./tools.js";
+import { createFilesSchema, CreateFileType, parseCreateFiles } from "./tools.js";
 
 
 /**
@@ -199,13 +199,14 @@ export class PromptAgent {
             }
         })
 
+        const files: CreateFileType = (typeof result.object === "string") ? parseCreateFiles(result.object) : result.object.files as CreateFileType;
 
         // create the files
-        for (const file of result.object.files) {
+        for (const file of files) {
             await createFile(this.baseFolder, '', file.filepath, file.content);
         }
 
-        return result.object.files.map(e => e.filepath);
+        return files.map((e)  => e.filepath);
     }
 
     /**
