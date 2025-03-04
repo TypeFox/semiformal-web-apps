@@ -1,5 +1,4 @@
 import type { Model } from '../language/generated/ast.js';
-import chalk from 'chalk';
 import { Command } from 'commander';
 import { LaDslLanguageMetaData } from '../language/generated/module.js';
 import { createLaDslServices } from '../language/la-dsl-module.js';
