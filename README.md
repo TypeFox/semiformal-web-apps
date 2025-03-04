@@ -21,15 +21,15 @@ The LLM is instructed to generate two folders, `frontend` and `backend` (for the
 #### CLI:
 Usage: `node bin/cli.js prompt [ldsl-path] -n [project-name] -p [provider] -d [output-dir] -m [model-name] -t [max-tokens]`
 Arguments:
-- `ldsl-path`: Path to the dsl file
-- `project-name`: Name of your project, will be created under `output-dir`
-- `provider`: `openai-assistant` or `openai`, `anthropic`, etc
-- `output-dir`: Directory to save the generated project
-- `model-name`*: Name of the model to use. Depends on the provider.
-- `max-tokens`*: Maximum number of tokens to use. Defaults to 4096. Model dependent, for `anthropic` use 8192. Please checkout [./model-info.md](model-info.md) for more information. 
-- `--text`*: A flag, if enabled, instead of serializing the DSL as a JSON, the DSL raw text file will be sent to the LLM for prompting. Useful for comparing `json` vs `text`.
+- `ldsl-path` (required): Path to the dsl file
+- `project-name` (required): Name of your project, will be created under `output-dir`
+- `provider`: `openai-assistant` or `openai`, `anthropic`, etc. Defaults to `anthropic`.
+- `output-dir`: Directory to save the generated project. Defaults to `./generated`
+- `model-name`: Name of the model to use. Depends on the provider. Defaults to preset values, check `src/llm-api/common/default-models.ts` for details.
+- `max-tokens` (required if not using `gpt-4o` or `anthropic`): Maximum number of tokens to use. Model dependent, please checkout [./model-info.md](model-info.md) for more information. Some default values are preset for some models but not all.
+- `--text`: A flag, if enabled, instead of serializing the DSL as a JSON, the DSL raw text file will be sent to the LLM for prompting. Useful for comparing `json` vs `text`. Default `false`
 
-(*) means optional
+
 
 #### Requirements:
 1. Install dependencies: `npm i`

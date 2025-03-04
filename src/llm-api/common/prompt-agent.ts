@@ -115,7 +115,7 @@ export class PromptAgent {
         instrumentations: [getNodeAutoInstrumentations()],
     }) : undefined;
     
-    constructor(provider: ProviderModel, model: string, dslText: string, destination: string, projectName: string, maxTokens?: number, baseURL?: string) {
+    constructor(provider: ProviderModel, model: string, dslText: string, destination: string, projectName: string, maxTokens: number, baseURL?: string) {
         this.provider = provider;
         this.model = model;
         this.dslText = dslText;
@@ -125,7 +125,7 @@ export class PromptAgent {
         this.messageHistory = [];
 
         this.providerInstance = this.createProvider();
-        this.maxTokens = maxTokens ?? 4096;
+        this.maxTokens = maxTokens;
         this.sdk?.start();
     }
     

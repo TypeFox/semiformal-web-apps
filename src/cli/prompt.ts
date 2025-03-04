@@ -6,14 +6,14 @@ import { PromptAgent } from '../llm-api/common/prompt-agent.js';
 import { openaiAssistantPrompt } from '../llm-api/openai/prompt.js';
 import { Logger } from '../utils/logger.js';
 import { extractDestinationAndName } from './cli-util.js';
-import { PromptOptions } from './main.js';
+import { CliPromptOptions } from './main.js';
 import { NodeFileSystem } from 'langium/node';
 import { createLaDslServices } from '../language/la-dsl-module.js';
 
 export async function generatePrompt(
     model: Model,
     filePath: string,
-    opts: PromptOptions) {
+    opts: CliPromptOptions) {
     let { name, destination, provider, modelName, maxTokens, host } = opts;
     if (!modelName) {
         modelName = defaultModels[provider];
@@ -50,7 +50,7 @@ export async function generatePrompt(
                     });
                 }
 
-                let agent = new PromptAgent(provider, modelName, dslContent, data.destination, name, maxTokens ? parseInt(maxTokens) : undefined, host);
+                let agent = new PromptAgent(provider, modelName, dslContent, data.destination, name, maxTokens, host);
                 await agent.generate();
             }
             else {
