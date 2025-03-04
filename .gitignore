@@ -9,3 +9,4 @@ syntaxes/
 .env
 samples/outputs
 .DS_Store
+generated
