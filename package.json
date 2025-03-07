@@ -1,8 +1,13 @@
 {
-    "name": "la-dsl",
-    "description": "Please enter a brief description here",
-    "version": "0.0.1",
+    "name": "semiform-extension",
+    "displayName": "Semiform Extension",
+    "description": "An extension for Semiform DSL",
+    "version": "1.0.0",
+    "publisher": "your-publisher-name",
     "files": [
+        "syntaxes",
+        "language-configuration.json",
+        "langium-config.json",
         "bin",
         "out",
         "src"
@@ -48,6 +53,7 @@
         "chalk": "~5.3.0",
         "cli-table3": "^0.6.5",
         "commander": "~11.0.0",
+        "dotenv": "^16.4.7",
         "langfuse-vercel": "^3.35.2",
         "langium": "~3.3.0",
         "monaco-editor": "npm:@codingame/monaco-vscode-editor-api@~3.2.3",
@@ -56,14 +62,14 @@
         "ollama-ai-provider": "^1.2.0",
         "openai": "^4.83.0",
         "ora": "^7.0.1",
-        "vscode": "npm:@codingame/monaco-vscode-api@~3.2.3",
-        "vscode-languageclient": "~9.0.1",
-        "vscode-languageserver": "~9.0.1",
         "winston": "^3.11.0",
         "zod": "^3.24.2"
     },
     "devDependencies": {
         "@codingame/esbuild-import-meta-url-plugin": "~1.0.2",
+        "vscode": "npm:@codingame/monaco-vscode-api@~3.2.3",
+        "vscode-languageclient": "~9.0.1",
+        "vscode-languageserver": "~9.0.1",
         "@types/node": "^18.0.0",
         "@types/vscode": "~1.67.0",
         "@typescript-eslint/eslint-plugin": "~7.3.1",
@@ -81,13 +87,16 @@
         "node": "18.19.1",
         "npm": "10.2.4"
     },
-    "displayName": "la-dsl",
     "engines": {
         "vscode": "^1.67.0",
         "node": ">=18.0.0"
     },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/TypeFox/semiform"
+    },
     "categories": [
-        "Programming Languages"
+        "Other"
     ],
     "contributes": {
         "languages": [
