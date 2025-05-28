@@ -4,14 +4,14 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build la-dsl",
+            "label": "Build SWA",
             "command": "npm run langium:generate && npm run build",
             "type": "shell",
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "detail": "Langium: Generate grammar and build the la-dsl language",
+            "detail": "Langium: Generate grammar and build the SWA language",
             "icon": {
                 "color": "terminal.ansiGreen",
                 "id": "server-process"

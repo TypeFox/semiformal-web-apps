@@ -1,14 +1,14 @@
 {
-    "projectName": "LaDsl",
+    "projectName": "SemiformalWebApps",
     "languages": [{
-        "id": "la-dsl",
-        "grammar": "src/language/la-dsl.langium",
-        "fileExtensions": [".ldsl"],
+        "id": "swa",
+        "grammar": "src/language/swa.langium",
+        "fileExtensions": [".swa"],
         "textMate": {
-            "out": "syntaxes/la-dsl.tmLanguage.json"
+            "out": "syntaxes/swa.tmLanguage.json"
         },
         "monarch": {
-            "out": "src/syntaxes/la-dsl.monarch.ts"
+            "out": "src/syntaxes/swa.monarch.ts"
         }
     }],
     "out": "src/language/generated"

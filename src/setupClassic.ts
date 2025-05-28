@@ -1,6 +1,6 @@
 import { MonacoEditorLanguageClientWrapper, UserConfig } from 'monaco-editor-wrapper';
 import { configureWorker, defineUserServices } from './setupCommon.js';
-import monarchSyntax from "./syntaxes/la-dsl.monarch.js";
+import monarchSyntax from "./syntaxes/swa.monarch.js";
 
 export const setupConfigClassic = (): UserConfig => {
     return {
@@ -8,8 +8,8 @@ export const setupConfigClassic = (): UserConfig => {
             serviceConfig: defineUserServices(),
             editorAppConfig: {
                 $type: 'classic',
-                languageId: 'la-dsl',
-                code: `// LaDSL is running in the web!`,
+                languageId: 'swa',
+                code: `// SWA is running in the web!`,
                 useDiffEditor: false,
                 languageExtensionConfig: { id: 'langium' },
                 languageDef: monarchSyntax,

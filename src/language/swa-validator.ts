@@ -1,14 +1,14 @@
 import type { ValidationAcceptor, ValidationChecks } from 'langium';
-import type { Entity, LaDslAstType } from './generated/ast.js';
-import type { LaDslServices } from './la-dsl-module.js';
+import type { Entity, SemiformalWebAppsAstType } from './generated/ast.js';
+import type { SWAServices } from './swa-module.js';
 
 /**
  * Register custom validation checks.
  */
-export function registerValidationChecks(services: LaDslServices) {
+export function registerValidationChecks(services: SWAServices) {
     const registry = services.validation.ValidationRegistry;
-    const validator = services.validation.LaDslValidator;
-    const checks: ValidationChecks<LaDslAstType> = {
+    const validator = services.validation.SWAValidator;
+    const checks: ValidationChecks<SemiformalWebAppsAstType> = {
         Entity: validator.checkPersonStartsWithCapital
     };
     registry.register(checks, validator);
@@ -17,7 +17,7 @@ export function registerValidationChecks(services: LaDslServices) {
 /**
  * Implementation of custom validations.
  */
-export class LaDslValidator {
+export class SWAValidator {
 
     checkPersonStartsWithCapital(entity: Entity, accept: ValidationAcceptor): void {
         if (entity.name) {

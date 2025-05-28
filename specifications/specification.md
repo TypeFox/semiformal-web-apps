@@ -1,9 +1,9 @@
-## LaDSL specification
-LaDSL is a DSL for describing projects, communicating them properly to LLM to emit
+## SWA specification
+SWA is a DSL for describing projects, communicating them properly to LLM to emit
 projects that adhere to user requirements.
 
 ## User Prompting:
-The LaDSL will be converted to a JSON for starters.
+The SWA will be converted to a JSON for starters.
 
 ## System Prompting
 System prompting ideas:
