@@ -101,30 +101,30 @@
     "contributes": {
         "languages": [
             {
-                "id": "la-dsl",
+                "id": "swa",
                 "aliases": [
-                    "LaDSL",
-                    "la-dsl"
+                    "SWA",
+                    "swa"
                 ],
                 "extensions": [
-                    ".ldsl"
+                    ".swa"
                 ],
                 "configuration": "./language-configuration.json"
             }
         ],
         "grammars": [
             {
-                "language": "la-dsl",
-                "scopeName": "source.la-dsl",
-                "path": "syntaxes/la-dsl.tmLanguage.json"
+                "language": "swa",
+                "scopeName": "source.swa",
+                "path": "syntaxes/swa.tmLanguage.json"
             }
         ]
     },
     "activationEvents": [
-        "onLanguage:la-dsl"
+        "onLanguage:swa"
     ],
     "main": "./out/extension/main.cjs",
     "bin": {
-        "la-dsl-cli": "./bin/cli.js"
+        "swa-cli": "./bin/cli.js"
     }
 }

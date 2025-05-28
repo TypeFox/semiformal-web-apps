@@ -14,14 +14,14 @@ A semi-formal DSL for prompting LLMs.
 Current, the AST is serialized as JSON and sent to the assistant.
 The system prompts explains the model's structure and semantics.
 
-The LLM is instructed to generate two folders, `frontend` and `backend` (for the given `samples/blog-demo.ldsl`).
+The LLM is instructed to generate two folders, `frontend` and `backend` (for the given `samples/blog-demo.swa`).
 
 ### Usage:
 
 #### CLI:
-Usage: `node bin/cli.js prompt [ldsl-path] -n [project-name] -p [provider] -d [output-dir] -m [model-name] -t [max-tokens]`
+Usage: `node bin/cli.js prompt [file-path] -n [project-name] -p [provider] -d [output-dir] -m [model-name] -t [max-tokens]`
 Arguments:
-- `ldsl-path` (required): Path to the dsl file
+- `file-path` (required): Path to the dsl file
 - `project-name` (required): Name of your project, will be created under `output-dir`
 - `provider`: `openai-assistant` or `openai`, `anthropic`, etc. Defaults to `anthropic`.
 - `output-dir`: Directory to save the generated project. Defaults to `./generated`
@@ -58,12 +58,12 @@ When creating a project, the `-p` parameter accepts a `provider` string, which c
 #### Example:
 Let's compare the two LLM backends, for the same DSL file!
 
-We will use the test case `samples/blog-demo.ldsl` and assume you have **both** keys exported, so all you need is
+We will use the test case `samples/blog-demo.swa` and assume you have **both** keys exported, so all you need is
 1. Make sure the folder `samples/outputs` exists
-2. Run `node --env-file=.env bin/cli.js prompt samples/blog-demo.ldsl -n blog-by-openai -p openai-assistant -d samples/outputs`
+2. Run `node --env-file=.env bin/cli.js prompt samples/blog-demo.swa -n blog-by-openai -p openai-assistant -d samples/outputs`
 4. Keep an eye on the console output
 5. Have a look into `samples/outputs/blog-by-openai`
-6. Run `node --env-file=.env bin/cli.js prompt samples/blog-demo.ldsl -n blog-by-anthropic -p anthropic -d samples/outputs -t 8192`
+6. Run `node --env-file=.env bin/cli.js prompt samples/blog-demo.swa -n blog-by-anthropic -p anthropic -d samples/outputs -t 8192`
 7. Have a look at both folders `samples/outputs/blog-by-openai` and `samples/outputs/blog-by-anthropic`.
 8. The backend should be runnable with `docker compose up` and the frontend with `npm i && npm run start`.
 

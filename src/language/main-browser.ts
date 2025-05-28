@@ -1,7 +1,7 @@
 import { EmptyFileSystem } from 'langium';
 import { startLanguageServer } from 'langium/lsp';
 import { BrowserMessageReader, BrowserMessageWriter, createConnection } from 'vscode-languageserver/browser.js';
-import { createLaDslServices } from './la-dsl-module.js';
+import { createSWAServices } from './swa-module.js';
 
 declare const self: DedicatedWorkerGlobalScope;
 
@@ -10,6 +10,6 @@ const messageWriter = new BrowserMessageWriter(self);
 
 const connection = createConnection(messageReader, messageWriter);
 
-const { shared } = createLaDslServices({ connection, ...EmptyFileSystem });
+const { shared } = createSWAServices({ connection, ...EmptyFileSystem });
 
 startLanguageServer(shared);

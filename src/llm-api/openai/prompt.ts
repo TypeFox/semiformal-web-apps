@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import * as path from 'node:path';
 import { NodeFileSystem } from 'langium/node';
-import { createLaDslServices } from '../../language/la-dsl-module.js';
+import { createSWAServices } from '../../language/swa-module.js';
 import type { Model } from '../../language/generated/ast.js';
 import { createAssistantWithFunctionCall, getAssistantResponse } from "./assistant-utils.js";
 import { spinner } from '../../utils/spinner.js';
@@ -15,7 +15,7 @@ export async function openaiAssistantPrompt(generatedFilePath: string, destinati
         apiKey: process.env["OPENAI_API_KEY"]
     });
 
-    const services = createLaDslServices(NodeFileSystem).LaDsl;
+    const services = createSWAServices(NodeFileSystem).SWA;
     const json = services.serializer.JsonSerializer.serialize(model, {
         comments: true,
         space: 4

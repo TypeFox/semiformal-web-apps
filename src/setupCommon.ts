@@ -28,7 +28,7 @@ export const configureWorker = (): LanguageClientConfig => {
     // vite does not extract the worker properly if it is URL is a variable
     const lsWorker = new Worker(new URL('./language/main-browser', import.meta.url), {
         type: 'module',
-        name: 'LaDsl Language Server'
+        name: 'SWA Language Server'
     });
 
     return {

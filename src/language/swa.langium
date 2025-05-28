@@ -1,4 +1,4 @@
-grammar LaDsl
+grammar SWA
 
 entry Model:
     ("stack" '=' '[' 

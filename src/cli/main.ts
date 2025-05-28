@@ -1,7 +1,7 @@
 import type { Model } from '../language/generated/ast.js';
 import { Command } from 'commander';
-import { LaDslLanguageMetaData } from '../language/generated/module.js';
-import { createLaDslServices } from '../language/la-dsl-module.js';
+import { SWALanguageMetaData } from '../language/generated/module.js';
+import { createSWAServices } from '../language/swa-module.js';
 import { extractAstNode } from './cli-util.js';
 import { generateJSON } from './generator.js';
 import { NodeFileSystem } from 'langium/node';
@@ -17,14 +17,14 @@ const packagePath = path.resolve(__dirname, '..', '..', 'package.json');
 const packageContent = await fs.readFile(packagePath, 'utf-8');
 
 export const generateAction = async (fileName: string, opts: GenerateOptions): Promise<void> => {
-    const services = createLaDslServices(NodeFileSystem).LaDsl;
+    const services = createSWAServices(NodeFileSystem).SWA;
     const model = await extractAstNode<Model>(fileName, services);
     generateJSON(model, fileName, opts.destination);
 };
 
 export const generatePromptAction = async (fileName: string, opts: PartialCliPromptOptions): Promise<void> => {
     const concreteOpts = fillDefaultCliArgs(opts);
-    const services = createLaDslServices(NodeFileSystem).LaDsl;
+    const services = createSWAServices(NodeFileSystem).SWA;
     const model = await extractAstNode<Model>(fileName, services);
     await generatePrompt(model, fileName, concreteOpts);
 };
@@ -65,7 +65,7 @@ export default function(): void {
 
     program.version(JSON.parse(packageContent).version);
 
-    const fileExtensions = LaDslLanguageMetaData.fileExtensions.join(', ');
+    const fileExtensions = SWALanguageMetaData.fileExtensions.join(', ');
     program
         .command('generate')
         .argument('<file>', `source file (possible file extensions: ${fileExtensions})`)

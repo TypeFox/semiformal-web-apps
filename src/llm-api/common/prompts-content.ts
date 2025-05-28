@@ -48,7 +48,7 @@ Follow these steps to generate the source code:
 Backend code must be within a "backend" folder
 Backend code must follows the following constraints:
 - Code must be runnable out of the box, there for ensure proper configuration, requirements and dependecies.
-- If the user has not specified a database, you can postgress as a default database.
+- If the user has not specified a database, you can postgres as a default database.
 - The backend database MUST be initialized with mock data, so that the frontend can display data.
 - Make sure the mock/seed data is properly generated and inserted into the database when the server starts.
 - Seeding must be done as the first thing the backend service does, right before starting the http server (for ease of development)

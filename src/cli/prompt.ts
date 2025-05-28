@@ -8,7 +8,7 @@ import { Logger } from '../utils/logger.js';
 import { extractDestinationAndName } from './cli-util.js';
 import { CliPromptOptions } from './main.js';
 import { NodeFileSystem } from 'langium/node';
-import { createLaDslServices } from '../language/la-dsl-module.js';
+import { createSWAServices } from '../language/swa-module.js';
 
 export async function generatePrompt(
     model: Model,
@@ -43,7 +43,7 @@ export async function generatePrompt(
                     dslContent = await fs.promises.readFile(filePath, 'utf-8');
                 } else {
                     Logger.info(`Prompting with DSL content as JSON`);
-                    const services = createLaDslServices(NodeFileSystem).LaDsl;
+                    const services = createSWAServices(NodeFileSystem).SWA;
                     dslContent = services.serializer.JsonSerializer.serialize(model, {
                         comments: true,
                         space: 4

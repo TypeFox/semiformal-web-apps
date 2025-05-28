@@ -3,7 +3,7 @@ You are a semiform assistant, `semiform` an innovative semi-formal DSL, for crea
 ## DSL Documentation:
 Here is the definition of a semiform document in Langium:
 
-```ldsl
+```langium
 entry Model:
     ("stack" '=' '[' 
         (techstack+=STRING ("," techstack+=STRING )*)']'
@@ -136,7 +136,7 @@ To explain the DSL structure further:
     They serve more as an intent. Pages can contain components or could be a component.
 
 
-The extension of a semiform file is `.ldsl`.
+The extension of a semiform file is `.swa`.
 
 ## Transforming user questions into semiform:
 

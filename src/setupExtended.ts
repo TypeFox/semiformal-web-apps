@@ -4,19 +4,19 @@ import { configureWorker, defineUserServices } from './setupCommon.js';
 export const setupConfigExtended = (): UserConfig => {
     const extensionFilesOrContents = new Map();
     extensionFilesOrContents.set('/language-configuration.json', new URL('../language-configuration.json', import.meta.url));
-    extensionFilesOrContents.set('/la-dsl-grammar.json', new URL('../syntaxes/la-dsl.tmLanguage.json', import.meta.url));
+    extensionFilesOrContents.set('/swa-grammar.json', new URL('../syntaxes/swa.tmLanguage.json', import.meta.url));
 
     return {
         wrapperConfig: {
             serviceConfig: defineUserServices(),
             editorAppConfig: {
                 $type: 'extended',
-                languageId: 'la-dsl',
-                code: `// LaDSL is running in the web!`,
+                languageId: 'swa',
+                code: `// SWA is running in the web!`,
                 useDiffEditor: false,
                 extensions: [{
                     config: {
-                        name: 'la-dsl-web',
+                        name: 'swa-web',
                         publisher: 'generator-langium',
                         version: '1.0.0',
                         engines: {
@@ -24,16 +24,16 @@ export const setupConfigExtended = (): UserConfig => {
                         },
                         contributes: {
                             languages: [{
-                                id: 'la-dsl',
+                                id: 'swa',
                                 extensions: [
-                                    '.la-dsl'
+                                    '.swa'
                                 ],
                                 configuration: './language-configuration.json'
                             }],
                             grammars: [{
-                                language: 'la-dsl',
-                                scopeName: 'source.la-dsl',
-                                path: './la-dsl-grammar.json'
+                                language: 'swa',
+                                scopeName: 'source.swa',
+                                path: './swa-grammar.json'
                             }]
                         }
                     },
